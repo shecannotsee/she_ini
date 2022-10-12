@@ -22,3 +22,48 @@ Q2
 
 对于section下的key
 
+
+
+### Building
+
+just include the head like this example in cmake
+
+```cmake
+# ...
+# set third-party path
+set(path "")
+# include
+include_directories(${path})
+# ...
+```
+
+
+
+### how to use?
+
+example
+
+```c++
+#include "DataStructure/Section.h"
+#include "Parse/Parse.h"
+
+void main(){
+  //config data
+  std::vector<sheIni::Section> config;
+  {
+    sheIni::IniFile config_file("./config.ini");
+    config_file.parse(config);
+  }
+
+  for (auto& e:config) {
+    // get section
+    std::cout<<"section is:"<<e.getSection()<<"\n";
+    // get key-value from section
+    for (auto& ee: e.getAllKV() ) {
+      std::cout<<"key:【"<<std::get<0>(ee)<<"】="
+              <<"value【"<<std::get<1>(ee)<<"】\n";
+    }
+  }
+}
+```
+
