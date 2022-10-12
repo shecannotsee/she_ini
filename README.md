@@ -29,7 +29,7 @@ Q2
 just include the head like this example in cmake
 
 ```cmake
-# ...
+# ....
 # set third-party path
 set(path "")
 # include
