@@ -36,27 +36,34 @@ class Section {
  private:
   string _section_name;
   unique_ptr<map<string,string>> _kv_p;
+
  public:
   Section()
       : Section(" ") {};
+
   explicit Section(const string& section_name)
       : _section_name(section_name),
         _kv_p(NoCPP14Standard::make_unique<map<string,string>>()) {};
+
   ~Section() = default;;
   Section(const Section&) = delete;
   Section& operator=(const Section&) = delete;
   Section(Section&&) = default;
   Section& operator=(Section&&) = default;
+  
  public:
   void setSection(const string& section_name) {
     _section_name = section_name;
   };
+
   string getSection() {
     return _section_name;
   };
+
   void setKV(const string& key, const string& value) {
     _kv_p->insert(map<string,string>::value_type(key,value));
   };
+
   vector<tuple<string,string>> getAllKV() {
     vector<tuple<string,string>> res;
     for (auto& e: (*_kv_p)) {
