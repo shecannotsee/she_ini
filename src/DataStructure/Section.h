@@ -18,13 +18,6 @@
 #include <tuple>
 #include <memory>
 
-namespace NoCPP14Standard{
-template<typename T, typename... Args>
-std::unique_ptr<T> make_unique(Args &&... args) {
-  return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
-};
-};//namespace NoCPP14Standard{
-
 namespace sheIni {
 using std::string;
 using std::unique_ptr;
@@ -43,7 +36,7 @@ class Section {
 
   explicit Section(const string& section_name)
       : _section_name(section_name),
-        _kv_p(NoCPP14Standard::make_unique<map<string,string>>()) {};
+        _kv_p(std::make_unique<map<string,string>>()) {};
 
   ~Section() = default;;
   Section(const Section&) = delete;

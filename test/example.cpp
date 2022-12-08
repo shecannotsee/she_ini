@@ -4,18 +4,16 @@
 
 #include <iostream>
 #include <vector>
-
-#include "temp.h"
-
-#include "DataStructure/Section.h"
-#include "Parse/Parse.h"
+#include <temp.h>
+#include <DataStructure/Section.h>
+#include <Parse/Parse.h>
 
 int main() {
   std::cout<<"start.\n";
   //method1();
   std::vector<sheIni::Section> config;
   {
-    sheIni::IniFile config_file("./config.ini");
+    sheIni::IniFile config_file("../config.ini");
     config_file.parse(config);
   }
 
