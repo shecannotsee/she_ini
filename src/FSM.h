@@ -31,7 +31,6 @@ class FSM {
   FSM() = default;
   ~FSM() = default;
  public:
-  void
   std::tuple<INI_s, std::string> getResults();
  private:
 
