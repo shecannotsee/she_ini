@@ -4,4 +4,8 @@
 
 #include "FSM.h"
 
+FSM::FSM()
+    : state_(FSM_S::start){
+};
+
 

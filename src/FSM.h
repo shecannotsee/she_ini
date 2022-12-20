@@ -5,36 +5,42 @@
 #ifndef SHEINI_SRC_FSM_H_
 #define SHEINI_SRC_FSM_H_
 
+#include "state.h"
 #include <string>
 #include <tuple>
-
-enum class INI_s : unsigned int {
-  Unknown = 0,    // 未知状态
-  Note,           // 注释
-  IniFile,        // 是一个文件
-  Section,        // 是一个Section
-  KeyWithValue    // 是一个普通kv键值对
-};
-
-enum class FSM_S :unsigned int {
-  start = 0,
-  middle,
-  end
-};
+#include <unordered_map>
+#include <functional>
 
 class FSM {
+ public:
+  FSM();
+  ~FSM() = default;
+  // copy
+  FSM(const FSM&) = delete;
+  FSM& operator=(const FSM&) = delete;
+  // move
+  FSM(FSM&&) = delete;
+  FSM& operator=(FSM&&) = delete;
+
  private:
-  INI_s state_;
+  FSM_S state_; // 状态机当前的状态
+  std::unordered_map<char,std::function<void()>> table_; // 根据
   std::string key_;
   std::string value_;
  public:
-  FSM() = default;
-  ~FSM() = default;
- public:
-  std::tuple<INI_s, std::string> getResults();
+  // 注册状态机动作
+  void registerEvent();
+  // 输入一个字符串
+  void addLine(std::string line);
+  // 获取输出结构
+  void getResults();
  private:
-
-
+  // 添加一些输入的固定动作
+  void addState(char, std::function<void()>);
+  // 提交可以触发状态机状态改变的事件
+  void addEvent(char ch);
 };
+
+
 
 #endif //SHEINI_SRC_FSM_H_

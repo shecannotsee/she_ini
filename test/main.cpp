@@ -5,6 +5,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <FSM.h>
 
 int main() {
   std::cout<<"sheIni test start.\n";
@@ -16,7 +17,7 @@ int main() {
 
   std::string line;
   while (std::getline(ini_file, line)) {
-
+    FSM fsm;
   }
 
 
