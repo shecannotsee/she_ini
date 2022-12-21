@@ -3,26 +3,14 @@
 //
 
 #include <iostream>
-#include <fstream>
-#include <string>
-#include <FSM.h>
+
+#include "method_1.h"
+#include "method_2.h"
 
 int main() {
   std::cout<<"sheIni test start.\n";
-  std::ifstream ini_file("../IniTestFile.ini");
-  if (!ini_file.is_open()) {
-    std::cout << "Failed to open INI file" << std::endl;
-    return 0;
-  }
-
-  std::string line;
-  while (std::getline(ini_file, line)) {
-    FSM fsm;
-  }
-
-
-  ini_file.close();
-
+  //method_1::main();
+  method_2::main();
   std::cout<<"sheIni test end.\n";
   return 0;
 };
