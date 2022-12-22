@@ -6,6 +6,9 @@
 
 FSM::FSM()
     : state_(FSM_S::start){
+}
+void FSM::registerEvent() {
+
 };
 
 
