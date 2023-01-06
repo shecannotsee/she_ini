@@ -16,16 +16,16 @@ enum class type : unsigned int {
 
 // 核心状态
 enum class INI_state : unsigned int {
-  notes_numberSign = 0,     // '#',It means to use # to express comments
-  section_start,            // '['
-  section_end,              // ']'
-  type_start,               // '('
-  type_end,                 // ')'
-  equal,                    // '='
-  lineEnd,                  // ';'
-  linuxLineBreaks,          // '\n'
-  WindowsLineBreak_first,   // '\r'
-  WindowsLineBreak_second   // '\n'
+  notes_numberSign = 0,           // '#',It means to use # to express comments
+  section_start = 91,             // '['
+  section_end = 93,               // ']'
+  type_start = 40,                // '('
+  type_end = 41,                  // ')'
+  equal = 61,                     // '='
+  lineEnd = 59,                   // ';'
+  linuxLineBreak = 10,            // '\n'
+  WindowsLineBreak_first = 13,    // '\r'
+  WindowsLineBreak_second         // '\n'
 
 };// INI_state
 
