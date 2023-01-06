@@ -10,7 +10,7 @@
 namespace sheIni {
 class FSM {
  public:
-  FSM() = default;
+  FSM();
   ~FSM() = default;
   // Disable copy
   FSM(const FSM &) = delete;
@@ -21,7 +21,11 @@ class FSM {
 
  private:
   FSM_state state_;
+ private:
+  void running(char);
  public:
+  // 传入一个字符推动自动机运行并获取运行结果
+  bool isEnd(char);
 
 };// class FSM
 };// namespace sheIni
