@@ -21,7 +21,7 @@ void main () {
   sheIni::FSM tool;
 
   for (char ch;!ini_file.eof();) {
-    if (tool.isEnd(ch)== true) {
+    if (tool.isEnd(ch)) {
       // 一个阶段处理完毕，可以展示数据了
     } else {
       // 还没到处理边界
