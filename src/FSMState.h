@@ -10,7 +10,8 @@ namespace sheIni {
 // 用该状态来对应fsm里如何运行
 enum class FSM_state : unsigned int {
   Sizzle = 0,
-  Stop
+  Stop,
+  ERROR
 };
 
 };// namespace sheIni
