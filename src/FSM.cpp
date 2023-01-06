@@ -4,8 +4,6 @@
 
 #include "FSM.h"
 
-FSM::FSM() {
-};
 
 
 

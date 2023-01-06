@@ -5,28 +5,26 @@
 #ifndef SHEINI_SRC_FSM_H_
 #define SHEINI_SRC_FSM_H_
 
-#include "state.h"
-#include <string>
-#include <tuple>
-#include <unordered_map>
-#include <functional>
+#include <FSMState.h>
 
+namespace sheIni {
 class FSM {
  public:
-  FSM();
+  FSM() = default;
   ~FSM() = default;
-  // copy
-  FSM(const FSM&) = delete;
-  FSM& operator=(const FSM&) = delete;
-  // move
-  FSM(FSM&&) = delete;
-  FSM& operator=(FSM&&) = delete;
+  // Disable copy
+  FSM(const FSM &) = delete;
+  FSM &operator=(const FSM &) = delete;
+  // Disable move
+  FSM(FSM &&) = delete;
+  FSM &operator=(FSM &&) = delete;
 
  private:
-
+  FSM_state state_;
  public:
 
-};
+};// class FSM
+};// namespace sheIni
 
 
 
