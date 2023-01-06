@@ -8,11 +8,11 @@
 
 sheIni::FSM::FSM()
     : state_(FSM_state::Sizzle),
-      dealIni_(DealIni()){
-}
+      dealIni_(std::make_unique<DealIni>()){
+};
 
 void sheIni::FSM::running(char ch) {
-  state_ = DealIni::interface(ch);
+  state_ = dealIni_->interface(ch);
 };
 
 bool sheIni::FSM::isEnd(char ch) {
@@ -23,5 +23,9 @@ bool sheIni::FSM::isEnd(char ch) {
     return true;
   };
 }
+
+std::tuple<sheIni::INI_line_state, sheIni::INI_value_type, std::string, std::string> sheIni::FSM::get() {
+  return dealIni_->get();
+};
 
 
