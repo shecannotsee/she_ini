@@ -7,6 +7,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <memory>
 #include <FSM.h>
 
 namespace method_3_FSM_test {
@@ -23,6 +24,37 @@ void main () {
   for (char ch;!ini_file.eof();) {
     if (tool.isEnd(ch)) {
       // 一个阶段处理完毕，可以展示数据了
+      if (std::get<0>(tool.get())==sheIni::INI_line_state::note) {
+        std::cout<<"This line is notes:["
+                 <<std::get<2>(tool.get())<<"]\n";
+
+      } else if (std::get<0>(tool.get())==sheIni::INI_line_state::section) {
+        std::cout<<"This line is a section:["
+                 <<std::get<2>(tool.get())<<"]\n";
+
+      } else if (std::get<0>(tool.get())==sheIni::INI_line_state::noTypeKV) {
+        std::cout<<"This line is no type k-v ,k:["
+                 <<std::get<2>(tool.get())<<"]"
+                 <<"v:["
+                 <<std::get<3>(tool.get())<<"]\n";
+
+      } else if (std::get<0>(tool.get())==sheIni::INI_line_state::TypeKV) {
+        std::cout<<"This line is no type k-v ,k:["
+                 <<std::get<2>(tool.get())<<"]"
+                 <<"v:["
+                 <<std::get<3>(tool.get())<<"]"
+                 <<"type:[";
+        if (std::get<1>(tool.get())==sheIni::INI_value_type::filePath) {
+          std::cout<<"file path]\n";
+        } else if (std::get<1>(tool.get())==sheIni::INI_value_type::FPN) {
+          std::cout<<"float]\n";
+        } else if (std::get<1>(tool.get())==sheIni::INI_value_type::integer) {
+          std::cout<<"integer]\n";
+        };
+
+      } else {
+        std::cout<<"Maybe have some errors.\n";
+      }
     } else {
       // 还没到处理边界
     };
