@@ -33,11 +33,12 @@ enum class INI_char_state : unsigned int {
 
 // INI每一行的状态
 enum class INI_line_state : unsigned int {
-  defaultValue = 0,
-  section,
-  noTypeKV,
-  TypeKV,
-  error
+  defaultValue = 0,   // 默认值
+  note,               // 注释
+  section,            // section值
+  noTypeKV,           // 默认类型(std::string)的key和value
+  TypeKV,             // 有类型的key和value
+  error               // 错误,一般在解析失败的时候会用到
 };// INI_line_state
 
 };// namespace sheIni
