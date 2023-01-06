@@ -2,15 +2,17 @@
 // Created by shecannotsee on 2022/12/19.
 //
 
-#include "FSM.h"
+#include <FSM.h>
+#include <DealIni.h>
 
 
 sheIni::FSM::FSM()
-    : state_(FSM_state::Sizzle){
+    : state_(FSM_state::Sizzle),
+      dealIni_(DealIni()){
 }
 
-void sheIni::FSM::running(char) {
-
+void sheIni::FSM::running(char ch) {
+  state_ = DealIni::interface(ch);
 };
 
 bool sheIni::FSM::isEnd(char ch) {
