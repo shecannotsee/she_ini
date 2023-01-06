@@ -17,6 +17,8 @@ sheIni::FSM_state sheIni::DealIni::interface(char ch) {
 
   } else if ( ch == (int)INI_char_state::section_start ) {
 
-  } else if ( ch == (int))
+  } else if ( ch == (int)INI_char_state::section_end ) {
+
+  }
 }
 

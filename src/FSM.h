@@ -7,6 +7,8 @@
 #ifndef SHEINI_SRC_FSM_H_
 #define SHEINI_SRC_FSM_H_
 
+#include <string>
+#include <tuple>
 #include <FSMState.h>
 #include <DealIni.h>
 
@@ -35,6 +37,7 @@ class FSM {
   DealIni dealIni_;
  public:
   // 无法避免的接口函数
+  std::tuple<INI_line_state,INI_value_type,std::string,std::string> get();
 
 
 };// class FSM
