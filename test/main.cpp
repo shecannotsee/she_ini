@@ -10,8 +10,8 @@
 
 int main() {
   std::cout<<"sheIni test start.\n";
-  //method_1::main();
-  method_2::main();
+//  method_1::main();
+//  method_2::main();
   method_3_FSM_test::main();
   std::cout<<"sheIni test end.\n";
   return 0;

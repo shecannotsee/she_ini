@@ -22,23 +22,29 @@ void main () {
   sheIni::FSM tool;
 
   for (char ch;!ini_file.eof();) {
+    ini_file >> ch;
+//    std::cout<<ch;
+    tool.add(ch);
     if (tool.isEnd(ch)) {
       // 一个阶段处理完毕，可以展示数据了
       if (std::get<0>(tool.get())==sheIni::INI_line_state::note) {
         std::cout<<"This line is notes:["
                  <<std::get<2>(tool.get())<<"]\n";
 
-      } else if (std::get<0>(tool.get())==sheIni::INI_line_state::section) {
+      }
+      else if (std::get<0>(tool.get())==sheIni::INI_line_state::section) {
         std::cout<<"This line is a section:["
                  <<std::get<2>(tool.get())<<"]\n";
 
-      } else if (std::get<0>(tool.get())==sheIni::INI_line_state::noTypeKV) {
+      }
+      else if (std::get<0>(tool.get())==sheIni::INI_line_state::noTypeValue) {
         std::cout<<"This line is no type k-v ,k:["
                  <<std::get<2>(tool.get())<<"]"
                  <<"v:["
                  <<std::get<3>(tool.get())<<"]\n";
 
-      } else if (std::get<0>(tool.get())==sheIni::INI_line_state::TypeKV) {
+      }
+      else if (std::get<0>(tool.get())==sheIni::INI_line_state::TypeValue) {
         std::cout<<"This line is no type k-v ,k:["
                  <<std::get<2>(tool.get())<<"]"
                  <<"v:["
@@ -52,11 +58,16 @@ void main () {
           std::cout<<"integer]\n";
         };
 
-      } else {
+      }
+      else if (std::get<0>(tool.get())==sheIni::INI_line_state::end) {
+        std::cout<<"One line deal complate.\n";
+      }
+      else {
         std::cout<<"Maybe have some errors.\n";
       }
     } else {
       // 还没到处理边界
+
     };
   };// for
 

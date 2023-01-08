@@ -33,14 +33,17 @@ class DealIni {
   sheIni::INI_value_type  type_;      // ini extend:value type
 
  public:
+  void setDefault();
   FSM_state interface(char);
-  FSM_state singleNote();
-  FSM_state multipleSection();
-  FSM_state multipleType();
-  FSM_state singleEqual();
-  FSM_state singleLineEnd();
-  FSM_state singleLinuxLineBreak();
-  FSM_state multipleWindowsLineBreak();
+ private:
+  FSM_state singleNote(char);
+  FSM_state multipleSection(char);
+  FSM_state multipleType(char);
+  FSM_state singleEqual(char);
+  FSM_state singleLineEnd(char);
+  FSM_state singleLinuxLineBreak(char);
+  FSM_state multipleWindowsLineBreak(char);
+  FSM_state dealOtherChar(char);
 
  public:
   // std::get<0>() 为ini line类型

@@ -34,26 +34,34 @@ void main() {
       value.clear();
       type.clear();
       p=&key;
-    } else if (ch==';'||ch=='#') {
+    }
+    else if (ch==';'||ch=='#') {
       std::cout<<"this is a note.\n";
       ;
-    } else if (ch=='[') {
+    }
+    else if (ch=='[') {
       std::cout<<"Start parse a section.";
       p = &section;
-    } else if (ch==']') {
+    }
+    else if (ch==']') {
       std::cout<<"section is :["<<(*p)<<"].\n";
-    } else if (ch=='(') {
+    }
+    else if (ch=='(') {
       std::cout<<"Start parse a type.";
       p = &type;
-    } else if (ch==')') {
+    }
+    else if (ch==')') {
       std::cout<<"type is :["<<(*p)<<"].\n";
       p = &key;
-    } else if (ch=='=') {
+    }
+    else if (ch=='=') {
       std::cout<<"key is :["<<(*p)<<"].\n";
       p=&value;
-    } else if (ch==' ') {
+    }
+    else if (ch==' ') {
 
-    } else {
+    }
+    else {
       if (p== nullptr)
         p = &key;
       (*p)+=ch;
