@@ -22,9 +22,14 @@ void main () {
   sheIni::FSM tool;
 
   for (char ch; ini_file.get(ch);) {
+    std::cout<<ch;
     tool.add(ch);
     if (tool.getState()==sheIni::FSM_state::Stop) {
-
+      auto ret = tool.get();
+      std::cout<<static_cast<int>(std::get<0>(ret));
+      std::cout<<static_cast<int>(std::get<1>(ret));
+      std::cout<<(std::get<2>(ret));
+      std::cout<<(std::get<3>(ret));
     }
     else if (tool.getState()==sheIni::FSM_state::ERROR) {
       std::cout<<"Maybe some errors have appeared.\n";
