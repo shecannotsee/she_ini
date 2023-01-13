@@ -24,9 +24,10 @@ void main() {
   std::string type;
   std::string* p = nullptr;
   int state = 0;
-  for (char ch;!ini_file.eof();) {
+  for (char ch; ini_file.get(ch);) {
     ini_file >> ch;
     if (ch=='\n') {
+      std::cout<<"换行符"<<std::endl;
       std::cout<<value;
       p = nullptr;
       section.clear();
