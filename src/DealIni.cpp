@@ -161,6 +161,8 @@ sheIni::FSM_state sheIni::DealIni::dealOtherChar(char ch) {
   else /*处理一些其他的字符以及其他情况*/ {
     // 处理无类型k-v
     if (next_==INI_reading_pointer::defaultValue) {
+      // 表明该行是noType k-v
+      line_state_ = INI_line_state::noTypeValue;
       // 变更下次处理的状态
       next_==INI_reading_pointer::key;
       // 处理传入字符
