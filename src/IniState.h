@@ -17,6 +17,15 @@ enum class INI_line_state : unsigned int {
   defaultValue        // 默认初始化用值,也许该行什么也没有
 };// INI_line_state
 
+// 在判断出该行是kv并且带有类型时,具体类型(也与ascii码相对应)的枚举
+enum class INI_value_type : unsigned int {
+  error = 0 ,
+  defaultValue,        // 默认初始化用值,
+  filePath = 102,      // 'f',file path
+  FPN = 100,           // 'd',float,Floating point number
+  integer = 105        // 'i',int or more bits int
+};
+
 // 在读取过程中的存储指针指向
 enum class INI_reading_pointer : unsigned int {
   error = 0,
@@ -28,15 +37,6 @@ enum class INI_reading_pointer : unsigned int {
   maybe_end,      // 可能是结束符,主要针对windows上的/r/n这种换行模式
   end,            // 结束符
   defaultValue    // 默认初始化用值
-};
-
-// 在判断出该行是kv并且带有类型时,具体类型(也与ascii码相对应)的枚举
-enum class INI_value_type : unsigned int {
-  error = 0 ,
-  defaultValue,        // 默认初始化用值,
-  filePath = 102,      // 'f',file path
-  FPN = 100,           // 'd',float,Floating point number
-  integer = 105        // 'i',int or more bits int
 };
 
 // 核心字符状态,将字符与对应ascii字符码对应
