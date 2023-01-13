@@ -1,7 +1,9 @@
 ########################################################################################################################
 cmake_minimum_required(VERSION 3.10)
 
-set(CMAKE_CXX_STANDARD 14) # googletest min cpp standard is c++14
+# To use magic_enum.hpp, so use c++17.
+# Otherwise, the project can be changed to c++14
+set(CMAKE_CXX_STANDARD 17) # googletest min cpp standard is c++14
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS "-g")# to deal clion debug invalid
 
