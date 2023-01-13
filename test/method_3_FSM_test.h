@@ -32,7 +32,6 @@ void main () {
       std::cout<<"["<<(std::get<2>(ret))<<"][";
       std::cout<<(std::get<3>(ret));
       std::cout<<"]\n";
-
     }
     else if (tool.getState()==sheIni::FSM_state::ERROR) {
       std::cout<<"Maybe some errors have appeared.\n";
@@ -41,6 +40,16 @@ void main () {
       // do nothing...
     };
   };// loop in every char
+  // 若文件末尾没有结尾标志(换行符或者是';'),需要手动添加结束符号来处理最后一行的数据,否则则会遗漏最后一行的数据
+  tool.add('\n');
+  if (tool.getState()==sheIni::FSM_state::Stop) {
+    auto ret = tool.get();
+    std::cout<<"["<<magic_enum::enum_name(std::get<0>(ret))<<"]:";
+    std::cout<<"["<<magic_enum::enum_name(std::get<1>(ret))<<"]:";
+    std::cout<<"["<<(std::get<2>(ret))<<"][";
+    std::cout<<(std::get<3>(ret));
+    std::cout<<"]\n";
+  }
 
 
 };

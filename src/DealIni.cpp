@@ -185,5 +185,5 @@ void sheIni::DealIni::setDefault() {
 
 std::tuple<sheIni::INI_line_state, sheIni::INI_value_type, std::string, std::string> sheIni::DealIni::get() {
   return std::make_tuple(line_state_,type_,key_,value_);
-}
+};
 
