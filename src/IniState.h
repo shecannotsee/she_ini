@@ -41,7 +41,7 @@ enum class INI_value_type : unsigned int {
 
 // 核心字符状态,将字符与对应ascii字符码对应
 enum class INI_char_state : unsigned int {
-  notes_numberSign = 0,           // '#',It means to use # to express comments
+  notes_numberSign = 35,           // '#',It means to use # to express comments
   section_start = 91,             // '['
   section_end = 93,               // ']'
   type_start = 40,                // '('
