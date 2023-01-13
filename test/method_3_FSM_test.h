@@ -23,7 +23,6 @@ void main () {
   sheIni::FSM tool;
 
   for (char ch; ini_file.get(ch);) {
-//    std::cout<<ch;
     tool.add(ch);
     if (tool.getState()==sheIni::FSM_state::Stop) {
       auto ret = tool.get();
