@@ -9,6 +9,7 @@
 #include <iostream>
 #include <memory>
 #include <FSM.h>
+#include "magic_enum.hpp"
 
 namespace method_3_FSM_test {
 
@@ -26,11 +27,11 @@ void main () {
     tool.add(ch);
     if (tool.getState()==sheIni::FSM_state::Stop) {
       auto ret = tool.get();
-      std::cout<<static_cast<int>(std::get<0>(ret));
-      std::cout<<static_cast<int>(std::get<1>(ret));
-      std::cout<<(std::get<2>(ret))<<"=";
+      std::cout<<"["<<magic_enum::enum_name(std::get<0>(ret))<<"]:";
+      std::cout<<"["<<magic_enum::enum_name(std::get<1>(ret))<<"]:";
+      std::cout<<"["<<(std::get<2>(ret))<<"][";
       std::cout<<(std::get<3>(ret));
-      std::cout<<"\n";
+      std::cout<<"]\n";
 
     }
     else if (tool.getState()==sheIni::FSM_state::ERROR) {
