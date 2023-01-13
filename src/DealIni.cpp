@@ -5,11 +5,11 @@
 #include "DealIni.h"
 
 sheIni::DealIni::DealIni()
-    : result_(INI_line_state::defaultValue),
-      section_(std::string()),
+    : line_state_(INI_line_state::defaultValue),
+      type_(INI_value_type::defaultValue),
       key_(std::string()),
       value_(std::string()),
-      type_(sheIni::INI_value_type::defaultValue){
+      next_(INI_reading_pointer::defaultValue) {
 };
 
 sheIni::FSM_state sheIni::DealIni::interface(char ch) {
@@ -59,76 +59,80 @@ sheIni::FSM_state sheIni::DealIni::interface(char ch) {
 }
 
 sheIni::FSM_state sheIni::DealIni::singleNote(char ch) {
-  result_ = INI_line_state::note;
-  return sheIni::FSM_state::Sizzle;
+  // 该行是一个注释
+  line_state_ = INI_line_state::note;
+  // 仅在测试时将注释写入value
+  next_ = INI_reading_pointer::value;
+  return FSM_state::Sizzle;
 };
 
 sheIni::FSM_state sheIni::DealIni::multipleSection(char ch) {
   if (ch == (int)INI_char_state::section_start) {
-    result_ = INI_line_state::section;
+    // 该行是一个section
+    line_state_ = INI_line_state::section;
+    next_ = INI_reading_pointer::value;
   } else if (ch==(int)INI_char_state::section_end) {
-    result_ = INI_line_state::defaultValue;
+    next_ = INI_reading_pointer::defaultValue;
   } else {
-    result_ = INI_line_state::error;
+    line_state_ = INI_line_state::error;
+    next_ = INI_reading_pointer::error;
   }
   return sheIni::FSM_state::Sizzle;
 };
 
 sheIni::FSM_state sheIni::DealIni::multipleType(char ch) {
   if (ch == (int)INI_char_state::type_start) {
-    result_ = INI_line_state::TypeValue;
+    // 该行是一个有类型的k-v
+    line_state_ = INI_line_state::TypeValue;
+    next_ = INI_reading_pointer::type;
   } else if (ch==(int)INI_char_state::type_end) /*处理完type后续按照正常kv处理即可*/ {
-    result_ = INI_line_state::defaultValue;
+    next_ = INI_reading_pointer::key;
   } else {
-    result_ = INI_line_state::error;
+    line_state_ = INI_line_state::error;
   }
   return sheIni::FSM_state::Sizzle;
 }
 
 sheIni::FSM_state sheIni::DealIni::singleEqual(char ch) {
-  result_ = INI_line_state::noTypeValue;
+  // 如果该行仍为默认状态,那么该行是一个无类型k-b
+  if (line_state_==INI_line_state::defaultValue) {
+    line_state_ == INI_line_state::noTypeValue;
+  }
+  next_ = INI_reading_pointer::value;
   return sheIni::FSM_state::Sizzle;
 };
 
 sheIni::FSM_state sheIni::DealIni::singleLineEnd(char ch) {
-  // result_ 不应该处于end状态
-//  result_ = INI_line_state::end;
-  return sheIni::FSM_state::Sizzle;
+  return FSM_state::Stop;
 };
 
 sheIni::FSM_state sheIni::DealIni::singleLinuxLineBreak(char ch) {
-  // result_ 不应该处于end状态
-  if (result_== INI_line_state::mayBeEnd) /*兼容windows下的换行符*/ {
-//    result_ = INI_line_state::end;
+  if (next_== INI_reading_pointer::maybe_end) /*兼容windows下的换行符*/ {
+    return  FSM_state::Stop;
   } else /*当然,遇到换行符都是行结束的意思*/ {
-//    result_ = INI_line_state::end;
+    return sheIni::FSM_state::Stop;
   }
-  return sheIni::FSM_state::Stop;
 };
 
 sheIni::FSM_state sheIni::DealIni::multipleWindowsLineBreak(char ch) {
-  // result_ 不应该处于end状态
-//  result_ = INI_line_state::mayBeEnd;
-  return sheIni::FSM_state::Stop;
+  //临时存储,若'\r'后不是'\n'时用来复原状态
+  temp_ = next_;
+  next_ = INI_reading_pointer::maybe_end;
+  return sheIni::FSM_state::Sizzle;
 };
 
 sheIni::FSM_state sheIni::DealIni::dealOtherChar(char ch) {
   if (ch == (int )INI_char_state::space) {
     // Space
   }
-  else if (result_==INI_line_state::note) /*只是用来测试,生产中不会对任何注释进行解析*/ {
-    key_ += ch;
-  }
-  else if (result_==INI_line_state::section) {
-    section_ += ch;
-  }
-  else if (result_==INI_line_state::defaultValue) /*任意非关键字字符开头处理*/ {
-    key_ += ch;
-  }
-  else if (result_==INI_line_state::noTypeValue) /*value处理*/ {
+  else if (next_==INI_reading_pointer::note) {
+    // 只是用来测试,生产中不会对任何注释进行解析
     value_ += ch;
   }
-  else if (result_==INI_line_state::TypeValue) /*处理类型里的字符*/ {
+  else if (next_==INI_reading_pointer::section) {
+    value_ += ch;
+  }
+  else if (next_==INI_reading_pointer::type) {
     if (ch == (int)INI_value_type::filePath) {
       type_ = INI_value_type::filePath;
     } else if (ch == (int)INI_value_type::FPN) {
@@ -139,22 +143,47 @@ sheIni::FSM_state sheIni::DealIni::dealOtherChar(char ch) {
       type_ = INI_value_type::error;
     }
   }
-  else if (result_==INI_line_state::end) {
-    return sheIni::FSM_state::ERROR;
+  else if (next_==INI_reading_pointer::key) /*仅处理了有类型的key*/ {
+    key_ += ch;
+  }
+  else if (next_==INI_reading_pointer::value) {
+    value_ +=ch;
+  }
+  else if (next_==INI_reading_pointer::maybe_end) {
+    // 运行到此分支代表'\r'后的字符不是'\n'
+    next_ = temp_;// 还原状态
+    this->dealOtherChar('\r');
+    this->dealOtherChar(ch);
+  }
+  else if (next_==INI_reading_pointer::end) {
+    // 此分支不会被运行
+  }
+  else /*处理一些其他的字符以及其他情况*/ {
+    // 处理无类型k-v
+    if (next_==INI_reading_pointer::defaultValue) {
+      // 变更下次处理的状态
+      next_==INI_reading_pointer::key;
+      // 处理传入字符
+      key_ += ch;
+    } else {
+      line_state_ == INI_line_state::error;
+      return FSM_state::Stop;
+    }
   }
 
-  return sheIni::FSM_state::Sizzle;
+  return FSM_state::Sizzle;
 };
 
 void sheIni::DealIni::setDefault() {
-  result_ = INI_line_state::defaultValue;
-  section_.clear();
+  line_state_ = INI_line_state::defaultValue;
+  type_ = INI_value_type::defaultValue;
   key_.clear();
   value_.clear();
-  type_ = sheIni::INI_value_type::defaultValue;
+  next_ = INI_reading_pointer::defaultValue;
+  temp_ = INI_reading_pointer::defaultValue;
 };
 
 std::tuple<sheIni::INI_line_state, sheIni::INI_value_type, std::string, std::string> sheIni::DealIni::get() {
-  return std::make_tuple(result_,type_,key_,value_);
+  return std::make_tuple(line_state_,type_,key_,value_);
 }
 
