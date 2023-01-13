@@ -21,55 +21,18 @@ void main () {
 
   sheIni::FSM tool;
 
-  for (char ch;!ini_file.eof();) {
-    ini_file >> ch;
-//    std::cout<<ch;
+  for (char ch; ini_file.get(ch);) {
     tool.add(ch);
-    if (tool.isEnd(ch)) {
-      // 一个阶段处理完毕，可以展示数据了
-      if (std::get<0>(tool.get())==sheIni::INI_line_state::note) {
-        std::cout<<"This line is notes:["
-                 <<std::get<2>(tool.get())<<"]\n";
+    if (tool.getState()==sheIni::FSM_state::Stop) {
 
-      }
-      else if (std::get<0>(tool.get())==sheIni::INI_line_state::section) {
-        std::cout<<"This line is a section:["
-                 <<std::get<2>(tool.get())<<"]\n";
-
-      }
-      else if (std::get<0>(tool.get())==sheIni::INI_line_state::noTypeValue) {
-        std::cout<<"This line is no type k-v ,k:["
-                 <<std::get<2>(tool.get())<<"]"
-                 <<"v:["
-                 <<std::get<3>(tool.get())<<"]\n";
-
-      }
-      else if (std::get<0>(tool.get())==sheIni::INI_line_state::TypeValue) {
-        std::cout<<"This line is no type k-v ,k:["
-                 <<std::get<2>(tool.get())<<"]"
-                 <<"v:["
-                 <<std::get<3>(tool.get())<<"]"
-                 <<"type:[";
-        if (std::get<1>(tool.get())==sheIni::INI_value_type::filePath) {
-          std::cout<<"file path]\n";
-        } else if (std::get<1>(tool.get())==sheIni::INI_value_type::FPN) {
-          std::cout<<"float]\n";
-        } else if (std::get<1>(tool.get())==sheIni::INI_value_type::integer) {
-          std::cout<<"integer]\n";
-        };
-
-      }
-      else if (std::get<0>(tool.get())==sheIni::INI_line_state::end) {
-        std::cout<<"One line deal complate.\n";
-      }
-      else {
-        std::cout<<"Maybe have some errors.\n";
-      }
-    } else {
-      // 还没到处理边界
-
+    }
+    else if (tool.getState()==sheIni::FSM_state::ERROR) {
+      std::cout<<"Maybe some errors have appeared.\n";
+    }
+    else if (tool.getState()==sheIni::FSM_state::Sizzle) {
+      // do nothing...
     };
-  };// for
+  };// loop in every char
 
 
 };
