@@ -40,6 +40,7 @@ void main () {
       // do nothing...
     };
   };// loop in every char
+
   // 若文件末尾没有结尾标志(换行符或者是';'),需要手动添加结束符号来处理最后一行的数据,否则则会遗漏最后一行的数据
   tool.add('\n');
   if (tool.getState()==sheIni::FSM_state::Stop) {
