@@ -19,7 +19,8 @@ sheIni::FSM_state sheIni::FSM::getState() {
   return this->state_;
 }
 
-std::tuple<sheIni::INI_line_state, sheIni::INI_value_type, std::string, std::string> sheIni::FSM::get() {
+std::tuple<sheIni::INI_line_state, sheIni::INI_value_type, std::string, std::string>
+sheIni::FSM::get() {
   auto ret = dealIni_->get();
   dealIni_->setDefault();
   return ret;
