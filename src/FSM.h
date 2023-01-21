@@ -43,8 +43,8 @@ class FSM {
   // 无法避免的接口函数
   // std::get<0>() 为ini line类型
   // std::get<1>() 为value类型,如果有的话
-  // std::get<2>() 为key或者section或者注释(仅在测试时存储注释) 的std::string
-  // std::get<3>() 为value的std::string
+  // std::get<2>() 仅在有key-value时候提供key值(std::string)
+  // std::get<3>() 为提供note,section,value的std::string
   std::tuple<INI_line_state,INI_value_type,std::string,std::string> get();
 
 };// class FSM
