@@ -80,4 +80,5 @@ sheIni::IniStructure &sheIni::IniStructure::section(const std::string &section) 
 
 std::string sheIni::IniStructure::getKey(const std::string &key) {
   return std::get<3>(IniStructure_[section_][key]);
-};
+}
+

@@ -32,6 +32,8 @@ class IniStructure {
   map_s_kv IniStructure_;
   std::string section_;
 
+  void trustProcess(char ch);
+
  public:
   // 读取文件并进行解析
   void readFromFile(const std::string& path);
