@@ -58,10 +58,10 @@ void sheIni::IniStructure::readFromFile(const std::string &path) {
 };
 
 sheIni::IniStructure &sheIni::IniStructure::section(const std::string &section) {
-  section_ = std::move(section);
+  section_ = section;
   return *this;
 };
 
 std::string sheIni::IniStructure::getKey(const std::string &key) {
-  return IniStructure_[section_][std::move(key)];
+  return IniStructure_[section_][key];
 };
