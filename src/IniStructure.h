@@ -33,11 +33,12 @@ class IniStructure {
   std::string section_;
 
  public:
+  // 读取文件并进行解析
   void readFromFile(const std::string& path);
   IniStructure& section(const std::string& section);
+  // 通用std::string接口返回
   std::string getKey(const std::string& key);
-
-
+  // TODO:需要添加特化接口
 
 
 };// class IniStructure
