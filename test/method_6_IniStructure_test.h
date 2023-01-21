@@ -14,6 +14,7 @@ void main() {
   IniTestFile_ini.readFromFile("../IniTestFile.ini");
   auto key1 = IniTestFile_ini.section("section1").getKey("key1");
 
+
 };
 
 };// namespace method_6_IniStructure
