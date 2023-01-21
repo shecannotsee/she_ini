@@ -30,13 +30,29 @@ void sheIni::IniStructure::readFromFile(const std::string &path) {
       else if (std::get<0>(ret) == sheIni::INI_line_state::section) {
         section_ = std::get<3>(ret);
       }
-      else if (std::get<0>(ret) == sheIni::INI_line_state::TypeValue) {
-        std::string temp = std::get<3>(ret);
-        value v_temp = std::make_tuple(std::string(),0.0,0,std::get<3>(ret));
-      }
-      else if (std::get<0>(ret) == INI_line_state::noTypeValue) {
-        std::string temp = std::get<3>(ret);
-        value v_temp = std::make_tuple(std::string(),0.0,0,std::get<3>(ret));
+      else if (std::get<0>(ret) == sheIni::INI_line_state::TypeValue || std::get<0>(ret) == INI_line_state::noTypeValue) {
+        map_kv kv_temp;/*构造该值*/ {
+          std::string temp = std::get<3>(ret);
+          value v_temp = std::make_tuple(std::string(),0.0,0,std::get<3>(ret));/*构造该值*/ {
+            if (std::get<1>(ret) != INI_value_type::defaultValue) {
+              // value存在类型时
+              if (std::get<1>(ret) == INI_value_type::filePath) {
+                // 类型为文件路径时
+                std::get<0>(v_temp) = std::get<3>(ret);
+              } else if (std::get<1>(ret) == INI_value_type::FPN) {
+                // 类型为浮点数时
+                std::get<1>(v_temp) = std::stod(std::get<3>(ret));
+              } else if (std::get<1>(ret) == INI_value_type::integer) {
+                // 类型为整数时
+                std::get<2>(v_temp) = std::stoi(std::get<3>(ret));
+              } else /*deal error*/ {
+                throw std::runtime_error("Value type processing error.\n");
+              }
+            }
+          };
+          kv_temp.insert(std::make_pair(/*key*/std::get<2>(ret), /*value*/v_temp));
+        };
+        IniStructure_.insert(std::make_pair(section_,kv_temp));
       }
       else {
         throw std::runtime_error("An error occurred while organizing the ini data structure.\n");
@@ -63,5 +79,5 @@ sheIni::IniStructure &sheIni::IniStructure::section(const std::string &section) 
 };
 
 std::string sheIni::IniStructure::getKey(const std::string &key) {
-  return IniStructure_[section_][key];
+  return std::get<3>(IniStructure_[section_][key]);
 };
