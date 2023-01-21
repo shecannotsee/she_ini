@@ -11,6 +11,7 @@
 #include <FSM.h>
 #include "magic_enum.hpp"
 
+// 主要用来测试sheIni中的fsm的功能的完整性
 namespace method_3_FSM_test {
 
 void main () {

@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 
+// 主要测试在读取文件时,获取文件中的所有字符,包括特殊字符例如换行符和一些隐藏字符等
 namespace method_4_for_every_char {
 
 void main() {

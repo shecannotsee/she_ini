@@ -10,6 +10,7 @@
 #include "magic_enum.hpp"
 #include "IniState.h"
 
+// 主要用来测试magic_enum库的功能,该库能够将枚举的名称通过静态反射来反射成字符串以便于在sheIni中进行debug
 namespace method_5_magic_enum_test {
 
 void main() {
