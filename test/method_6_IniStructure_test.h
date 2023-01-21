@@ -12,8 +12,12 @@ namespace method_6_IniStructure {
 void main() {
   sheIni::IniStructure IniTestFile_ini;
   IniTestFile_ini.readFromFile("../IniTestFile.ini");
-  auto key1 = IniTestFile_ini.section("section1").getKey("key1");
-
+  try {
+    auto key1 = IniTestFile_ini.section("section1").getKey("key1");
+    std::cout << key1 << "\n";
+  } catch (const std::runtime_error& e) {
+    std::cout << "Caught a runtime_error exception: " << e.what() << '\n';
+  }
 
 };
 

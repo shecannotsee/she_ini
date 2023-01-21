@@ -18,7 +18,7 @@ int main() {
 //  method_3_FSM_test::main();
 //  method_4_for_every_char::main();
 //  method_5_magic_enum_test::main();
-//  method_6_IniStructure::main();
+  method_6_IniStructure::main();
   std::cout<<"sheIni test end.\n";
   return 0;
 };
