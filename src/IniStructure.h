@@ -22,6 +22,10 @@ class IniStructure {
   IniStructure& operator=(IniStructure&&) = delete;
 
  private:
+  // std::get<0>()  std::string,file path
+  // std::get<1>()  double
+  // std::get<2>()  int
+  // std::get<3>()  std::string
   using value    = std::tuple</*file*/std::string,/*d*/double,/*i*/int,/*common*/std::string>;
   using map_kv   = std::unordered_map<std::string,value>;
   using map_s_kv = std::unordered_map<std::string,map_kv>;
