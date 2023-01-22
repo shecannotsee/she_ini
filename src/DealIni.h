@@ -32,7 +32,7 @@ class DealIni {
   std::string                 value_;       // ini:value
   INI_reading_pointer         next_;        // 用来处理在解析时的各种状态
   // TODO:多字符的复杂状态应为其单独创建一个枚举类,参考type
-  INI_reading_pointer temp_;                // 仅对'\r'变化的复原,
+  INI_reading_pointer         temp_;        // 仅对'\r'变化的复原,
 
  public:
   // 重制该类所有变量

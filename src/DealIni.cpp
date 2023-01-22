@@ -9,7 +9,8 @@ sheIni::DealIni::DealIni()
       type_(INI_value_type::defaultValue),
       key_(std::string()),
       value_(std::string()),
-      next_(INI_reading_pointer::defaultValue) {
+      next_(INI_reading_pointer::defaultValue),
+      temp_(INI_reading_pointer::defaultValue) {
 };
 
 sheIni::FSM_state sheIni::DealIni::interface(char ch) {
