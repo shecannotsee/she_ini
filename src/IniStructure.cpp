@@ -20,12 +20,12 @@ void sheIni::IniStructure::trustProcess(char ch,sheIni::FSM& characterParser) {
     }
     else if (std::get<0>(ret) == sheIni::INI_line_state::section) {
       section_ = std::get<3>(ret);
+      IniStructure_.insert(std::make_pair(section_,map_kv()));
     }
     else if (std::get<0>(ret) == sheIni::INI_line_state::TypeValue ||
              std::get<0>(ret) == INI_line_state::noTypeValue) {
-      map_kv kv_temp;/*构造该值*/ {
-        std::string temp = std::get<3>(ret);
-        value v_temp = std::make_tuple(std::string(), 0.0, 0, std::get<3>(ret));/*构造该值*/ {
+      std::string temp = std::get<3>(ret);
+      value v_temp = std::make_tuple(std::string(), 0.0, 0, std::get<3>(ret));/*构造该值*/ {
           if (std::get<1>(ret) != INI_value_type::defaultValue) {
             // value存在类型时
             if (std::get<1>(ret) == INI_value_type::filePath) {
@@ -42,9 +42,7 @@ void sheIni::IniStructure::trustProcess(char ch,sheIni::FSM& characterParser) {
             }
           }
         };
-        kv_temp.insert(std::make_pair(/*key*/std::get<2>(ret), /*value*/v_temp));
-      };
-      IniStructure_.insert(std::make_pair(section_,kv_temp));
+      (IniStructure_[section_]).emplace(std::get<2>(ret),v_temp);
     }
     else {
       throw std::runtime_error("An error occurred while organizing the ini data structure.\n");
@@ -69,7 +67,6 @@ void sheIni::IniStructure::readFromFile(const std::string &path) {
   for (char ch; ini_file.get(ch);) {
     this->trustProcess(ch,characterParser);
   };
-
   // 若文件末尾没有结尾标志(换行符或者是';'),需要手动添加结束符号来处理最后一行的数据,否则则会遗漏最后一行的数据
   this->trustProcess('\n',characterParser);
 };
