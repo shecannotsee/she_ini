@@ -96,7 +96,7 @@ sheIni::FSM_state sheIni::DealIni::multipleType(char ch) {
 sheIni::FSM_state sheIni::DealIni::singleEqual(char ch) {
   // 如果该行仍为默认状态,那么该行是一个无类型k-b
   if (line_state_==INI_line_state::defaultValue) {
-    line_state_ == INI_line_state::noTypeValue;
+    line_state_ = INI_line_state::noTypeValue;
   }
   next_ = INI_reading_pointer::value;
   return sheIni::FSM_state::Sizzle;
@@ -164,11 +164,11 @@ sheIni::FSM_state sheIni::DealIni::dealOtherChar(char ch) {
       // 表明该行是noType k-v
       line_state_ = INI_line_state::noTypeValue;
       // 变更下次处理的状态
-      next_==INI_reading_pointer::key;
+      next_=INI_reading_pointer::key;
       // 处理传入字符
       key_ += ch;
     } else {
-      line_state_ == INI_line_state::error;
+      line_state_ = INI_line_state::error;
       return FSM_state::Stop;
     }
   }
