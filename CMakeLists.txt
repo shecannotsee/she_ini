@@ -13,7 +13,7 @@ project(${PROJECT_NAME})
 
 ########################################################################################################################
 set(unit_test "ON")
-set(library "OFF")
+set(library "ON")
 
 # test set
 if (unit_test STREQUAL "ON")
@@ -83,7 +83,11 @@ install(TARGETS
 # To use make install to build library
 # install include
 install(FILES
-        ${CMAKE_SOURCE_DIR}/src/sheBase64.h # source head
+        ${CMAKE_SOURCE_DIR}/src/DealIni.h # source head
+        ${CMAKE_SOURCE_DIR}/src/FSM.h # source head
+        ${CMAKE_SOURCE_DIR}/src/FSMState.h # source head
+        ${CMAKE_SOURCE_DIR}/src/IniState.h # source head
+        ${CMAKE_SOURCE_DIR}/src/IniStructure.h # source head
         DESTINATION # to
         ${PROJECT_NAME}/include # target dir
         )
