@@ -8,6 +8,7 @@
 #include <string>
 #include <unordered_map>
 #include <tuple>
+#include <FSM.h>
 
 namespace sheIni {
 class IniStructure {
@@ -32,7 +33,7 @@ class IniStructure {
   map_s_kv IniStructure_;
   std::string section_;
 
-  void trustProcess(char ch);
+  void trustProcess(char ch, sheIni::FSM&);
 
  public:
   // 读取文件并进行解析
