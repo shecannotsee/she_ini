@@ -43,6 +43,8 @@ class IniStructure {
   std::string getKey(const std::string& key);
   // TODO:需要添加特化接口
 
+  // TODO:需要添加递归文件类型的kv处理
+
 
 };// class IniStructure
 };// namespace sheIni
