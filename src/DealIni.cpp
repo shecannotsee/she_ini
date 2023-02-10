@@ -14,49 +14,36 @@ sheIni::DealIni::DealIni()
 };
 
 sheIni::FSM_state sheIni::DealIni::interface(char ch) {
-  switch (ch) {
-    case static_cast<int>(INI_char_state::notes_numberSign) : {
+    if (static_cast<int>(ch) == static_cast<int>(INI_char_state::notes_numberSign) ) {
       return this->singleNote(ch);
-      break;
     }
-    case static_cast<int>(INI_char_state::section_start) : {
+    else if (static_cast<int>(ch) == static_cast<int>(INI_char_state::section_start)) {
       return this->multipleSection(ch);
-      break;
     }
-    case static_cast<int>(INI_char_state::section_end) : {
+    else if (static_cast<int>(ch) == static_cast<int>(INI_char_state::section_end) ) {
       return this->multipleSection(ch);
-      break;
     }
-    case static_cast<int>(INI_char_state::type_start) : {
+    else if (static_cast<int>(ch) == static_cast<int>(INI_char_state::type_start) ) {
       return this->multipleType(ch);
-      break;
     }
-    case static_cast<int>(INI_char_state::type_end) : {
+    else if (static_cast<int>(ch) == static_cast<int>(INI_char_state::type_end) ) {
       return this->multipleType(ch);
-      break;
     }
-    case static_cast<int>(INI_char_state::equal) : {
+    else if (static_cast<int>(ch) == static_cast<int>(INI_char_state::equal) ) {
       return this->singleEqual(ch);
-      break;
     }
-    case static_cast<int>(INI_char_state::lineEnd) : {
+    else if (static_cast<int>(ch) == static_cast<int>(INI_char_state::lineEnd) ) {
       return this->singleLineEnd(ch);
-      break;
     }
-    case static_cast<int>(INI_char_state::WindowsLineBreak_first) : {
+    else if (static_cast<int>(ch) == static_cast<int>(INI_char_state::WindowsLineBreak_first) ) {
       return this->multipleWindowsLineBreak(ch);
-      break;
     }
-    case static_cast<int>(INI_char_state::linuxLineBreak) : {
+    else if (static_cast<int>(ch) == static_cast<int>(INI_char_state::linuxLineBreak) ) {
       return this->singleLinuxLineBreak(ch);
-      break;
     }
-    default : {
-      this->dealOtherChar(ch);
-      break;
+    else {
+        return this->dealOtherChar(ch);
     }
-
-  }
 }
 
 sheIni::FSM_state sheIni::DealIni::singleNote(char ch) {
