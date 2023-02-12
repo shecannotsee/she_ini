@@ -57,7 +57,7 @@ void sheIni::IniStructure::trustProcess(char ch,sheIni::FSM& characterParser) {
 };
 
 void sheIni::IniStructure::readFromFile(const std::string &path) {
-  std::ifstream ini_file("../IniTestFile.ini");
+  std::ifstream ini_file(path);
   if (!ini_file.is_open()) {
     throw std::runtime_error("Failed to open INI file.\n");
     return;
