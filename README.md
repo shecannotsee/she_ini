@@ -109,10 +109,6 @@ key2 =value2
 
 **[Rules-1]**  '#' can indicate note
 
-```ini
-# 注释2
-```
-
 **[Rules-1]**  The file name is the parent label of each section
 
 **[Rules-2]**  The k-v under the section belongs to the section by default
@@ -128,8 +124,6 @@ For example
 (d) It means that the value of the key-value pair is a floating point type
 
 More types may be added in the future for ease of use
-
-其他未用()标注的k-v键值对会默认用c++的std::string进行解析如果标注了类型会使用对应的类型进行解析
 
 **[Rules-4]**  You can use ';' Instead of line feed
 
