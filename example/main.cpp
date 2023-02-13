@@ -18,6 +18,10 @@ int main() {
   cout << "http://" << ip << ":" << port << endl;
   cout << "Config peth :[" << cfg_path << "]\n";
   cout << "log path :[" << log_path << "]\n";
+//  print results
+//  http://127.0.0.1:80889
+//  Config peth :[f/etc/example/]
+//  log path :[f/var/log/example/]
 
 
   return 0;
