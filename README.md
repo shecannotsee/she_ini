@@ -1,3 +1,94 @@
+sheIni is a library for parsing ini type files. On this basis, there are some extensions to ini type files
+
+Authors: shecannotsee (shecannotsee@163.com)
+
+# Features
+
+- In order to compensate for the poor performance of ini type files supported by objects,the problem is solved by adding file objects.
+- Easy to use.
+- Clear architecture so that you can easily modify the library
+
+
+
+# Documentation
+
+You can find more details in folder ./example
+
+config.ini
+
+```
+[config-set]
+ip = 127.0.0.1
+port = 80889
+[f] config_path = /etc/example/
+[f] log_path = /var/log/example/
+```
+
+example.cpp
+
+```c++
+#include <iostream>
+#include <string>
+// You should use this head file.
+#include <IniStructure.h>
+
+int main() {
+  sheIni::IniStructure web_config;
+  // Load the file data to your memory object.
+  web_config.readFromFile("../config.ini");
+  // And use the results.
+  auto ip       = web_config.section("config-set").getKey("ip");
+  auto port     = web_config.section("config-set").getKey("port");
+  auto cfg_path = web_config.section("config-set").getKey("config_path");
+  auto log_path = web_config.section("config-set").getKey("log_path");
+
+  using ::std::cout;using ::std::endl;
+  // print
+  cout << "http://" << ip << ":" << port << endl;
+  cout << "Config peth :[" << cfg_path << "]\n";
+  cout << "log path :[" << log_path << "]\n";
+//  print results
+//  http://127.0.0.1:80889
+//  Config peth :[f/etc/example/]
+//  log path :[f/var/log/example/]
+
+  return 0;
+};
+```
+
+
+
+# Getting the Source
+
+```shell
+git clone https://github.com/shecannotsee/sheIni.git
+```
+
+
+
+# Building
+
+This project supports [CMake](https://cmake.org/) out of the box.
+
+### Build for Linux or Mac
+
+```shell
+# now you are in the directory ${path}/sheIni
+➜ pwd
+${path}/sheIni
+➜ mkdir build
+➜ cd build
+➜ cmake ..
+➜ make -j8
+➜ make install DESTDIR=${path}/sheBase64lib
+```
+
+
+
+
+
+
+
 对于一个ini文件格式如下
 
 ```ini
@@ -115,4 +206,8 @@ key2 = value2;
 | '(d)' | 表示该key-value是一个浮点数        |      |
 | '(i)' | 表示该key-value是一个整数          |      |
 |       | 也许以后这里会增加更多的类型       |      |
+
+
+
+
 

@@ -13,7 +13,7 @@ include_directories(${sheIni}/include)
 # lib
 link_directories(${sheIni}/lib)
 
-file(GLOB_RECURSE SRC "${CMAKE_SOURCE_DIR}/main.cpp")
+file(GLOB_RECURSE SRC "${CMAKE_SOURCE_DIR}/example.cpp")
 add_executable(${PROJECT_NAME} ${SRC})
 
 # 链接库

@@ -23,6 +23,5 @@ int main() {
 //  Config peth :[f/etc/example/]
 //  log path :[f/var/log/example/]
 
-
   return 0;
 };
