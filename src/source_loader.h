@@ -56,7 +56,7 @@ class source_loader {
    * @return A vector containing the characters read. The vector size may be less
    *         than the requested size if the end of the file is reached.
    */
-  auto read_buffer(uint8_t size = 1024) -> std::vector<char>;
+  auto read_buffer(uint32_t size = 1024) -> std::vector<char>;
 };
 
 }  // namespace ini::detail

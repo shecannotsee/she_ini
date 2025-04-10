@@ -1,5 +1,6 @@
 #include "source_loader.h"
 
+#include <iostream>
 #include <stdexcept>
 
 using namespace ini::detail;
@@ -23,9 +24,28 @@ auto source_loader::read_char() -> std::optional<char> {
   }
 }
 
-auto source_loader::read_buffer(const uint8_t size) -> std::vector<char> {
-  std::vector<char> buffer(size);
-  file_.read(buffer.data(), size);
-  buffer.resize(static_cast<size_t>(file_.gcount()));
+auto source_loader::read_buffer(const uint32_t size) -> std::vector<char> {
+  // Get seek flag
+  const std::streampos current_pos = file_.tellg();
+
+  // Get file size
+  file_.seekg(0, std::ios::end);
+  const std::streampos file_end = file_.tellg();
+  file_.seekg(current_pos);  // recover seek flag
+
+  // Cal remaining and Create return buffer
+  const std::streampos remaining = file_end - current_pos;
+  std::vector<char> buffer(remaining);
+
+  // read
+  if (remaining >= size) {
+    buffer.resize(size);
+    file_.read(buffer.data(), size);
+  } else {
+    // read all
+    buffer.resize(static_cast<size_t>(remaining));
+    file_.read(buffer.data(), remaining);
+  }
+
   return buffer;
 }
