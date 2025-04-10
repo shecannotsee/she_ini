@@ -42,4 +42,6 @@ TEST(validation, file_system) {
     std::cout << ch;
   }
   read_file.close();
+
+  std::filesystem::remove_all(temp_dir);
 }
