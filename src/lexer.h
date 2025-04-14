@@ -3,30 +3,36 @@
 
 #include <string>
 
+#include "source_loader.h"
+
 namespace ini::detail {
 
-enum class token_type {
-  SECTION_BEGIN   = '[',
-  SECTION_END     = ']',
-  TYPE_CONVERSION = '=',
+struct token {
+  enum class type {
+    SECTION_BEGIN   = '[',
+    SECTION_END     = ']',
+    TYPE_CONVERSION = '=',
 
-  COMMENT_1  = '#',
-  COMMENT_2  = ';',
-  LINE_BREAK = '\n',
+    COMMENT_1  = '#',
+    COMMENT_2  = ';',
+    LINE_BREAK = '\n',
 
-  ESCAPE = '\\',
-  VALUE  = 0
+    ESCAPE = '\\',
+    VALUE  = 1,
+    NONE   = 0,
+  };
+  type type;
+  std::string value;
 };
 
 class lexer {
-  bool init;
+  source_loader loader_;
 
  public:
-  lexer();
-  lexer(std::string_view);
-  ~lexer();
+  explicit lexer(const std::string& file_path);
+  ~lexer() = default;
 
- public:
+  auto get_token() -> std::vector<token>;
 };
 
 }  // namespace ini::detail

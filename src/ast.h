@@ -4,7 +4,7 @@
 namespace ini::detail {
 
 enum class ast_type {
-  DIRECTORY,  //
+  DIRECTORY,  ///<
   FILE,
   SECTION,
   KEY,
