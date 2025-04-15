@@ -22,7 +22,7 @@ struct std::hash<std::tuple<pre_tokenization::states, pre_tokenization::alphabet
 };
 template <>
 struct std::hash<std::tuple<tokenization::states, tokenization::alphabet>> {
-  std::size_t operator()(const std::tuple<pre_tokenization::states, pre_tokenization::alphabet>& key) const noexcept {
+  std::size_t operator()(const std::tuple<tokenization::states, tokenization::alphabet>& key) const noexcept {
     using std::hash;
     return hash<int>()(static_cast<int>(std::get<0>(key))) ^ (hash<int>()(static_cast<int>(std::get<1>(key))) << 1);
   }
@@ -77,7 +77,7 @@ std::unordered_map<std::tuple<states, alphabet>, states> transfer_function = {
     {{states::S2, /* + */ alphabet::Q1}, /* -> */ states::S5},
     {{states::S2, /* + */ alphabet::Q2}, /* -> */ states::S1},
     {{states::S2, /* + */ alphabet::Q3}, /* -> */ states::S2},
-    {{states::S2, /* + */ alphabet::Q4}, /* -> */ states::S1},
+    {{states::S2, /* + */ alphabet::Q4}, /* -> */ states::REFUSE},
     // S4
     {{states::S4, /* + */ alphabet::Q1}, /* -> */ states::S3},
     {{states::S4, /* + */ alphabet::Q2}, /* -> */ states::S2},
@@ -105,13 +105,13 @@ auto transition_status(const states now, char_type input) -> states {
 
 namespace tokenization {
 enum class states : int {
-  S1,  ///<
-  S2,
-  S3,
-  S4,
-  S5,
-  S6,
-  REFUSE,
+  S1,      ///< Ordinary characters
+  S2,      ///< section begin
+  S3,      ///< section end
+  S4,      ///< comment
+  S5,      ///< key to value
+  S6,      ///< accept
+  REFUSE,  ///< refuse
 };
 
 enum class alphabet : int {
@@ -147,7 +147,40 @@ auto get_alphabet(char_type input) -> alphabet {
 /********** Transition Function ***************************************************************************************/
 std::unordered_map<std::tuple<states, alphabet>, states> transfer_function = {
     // S1
-    {{states::S1, /* + */ alphabet::Q1}, /* -> */ states::S3},
+    {{states::S1, /* + */ alphabet::Q1}, /* -> */ states::S2},
+    {{states::S1, /* + */ alphabet::Q2}, /* -> */ states::S3},
+    {{states::S1, /* + */ alphabet::Q3}, /* -> */ states::S4},
+    {{states::S1, /* + */ alphabet::Q4}, /* -> */ states::S4},
+    {{states::S1, /* + */ alphabet::Q5}, /* -> */ states::S5},
+    {{states::S1, /* + */ alphabet::Q6}, /* -> */ states::S1},
+    // S2
+    {{states::S2, /* + */ alphabet::Q1}, /* -> */ states::REFUSE},
+    {{states::S2, /* + */ alphabet::Q2}, /* -> */ states::REFUSE},
+    {{states::S2, /* + */ alphabet::Q3}, /* -> */ states::S4},
+    {{states::S2, /* + */ alphabet::Q4}, /* -> */ states::S4},
+    {{states::S2, /* + */ alphabet::Q5}, /* -> */ states::S1},
+    {{states::S2, /* + */ alphabet::Q6}, /* -> */ states::S1},
+    // S3
+    {{states::S3, /* + */ alphabet::Q1}, /* -> */ states::REFUSE},
+    {{states::S3, /* + */ alphabet::Q2}, /* -> */ states::REFUSE},
+    {{states::S3, /* + */ alphabet::Q3}, /* -> */ states::S4},
+    {{states::S3, /* + */ alphabet::Q4}, /* -> */ states::S4},
+    {{states::S3, /* + */ alphabet::Q5}, /* -> */ states::REFUSE},
+    {{states::S3, /* + */ alphabet::Q6}, /* -> */ states::REFUSE},
+    // S4
+    {{states::S4, /* + */ alphabet::Q1}, /* -> */ states::S4},
+    {{states::S4, /* + */ alphabet::Q2}, /* -> */ states::S4},
+    {{states::S4, /* + */ alphabet::Q3}, /* -> */ states::S4},
+    {{states::S4, /* + */ alphabet::Q4}, /* -> */ states::S4},
+    {{states::S4, /* + */ alphabet::Q5}, /* -> */ states::S4},
+    {{states::S4, /* + */ alphabet::Q6}, /* -> */ states::S4},
+    // S5
+    {{states::S5, /* + */ alphabet::Q1}, /* -> */ states::S1},
+    {{states::S5, /* + */ alphabet::Q2}, /* -> */ states::S1},
+    {{states::S5, /* + */ alphabet::Q3}, /* -> */ states::S4},
+    {{states::S5, /* + */ alphabet::Q4}, /* -> */ states::S4},
+    {{states::S5, /* + */ alphabet::Q5}, /* -> */ states::S1},
+    {{states::S5, /* + */ alphabet::Q6}, /* -> */ states::S1},
 };
 
 template <typename char_type>
@@ -170,7 +203,7 @@ using namespace ini::detail;
 lexer::lexer(const std::string& file_path) : loader_(file_path) {
 }
 
-auto lexer::get_token() -> std::vector<token> {
+auto lexer::get_token() noexcept -> std::vector<token> {
   std::vector<token> token_list;
   std::string single_line;
   // Pre-tokenization
@@ -179,8 +212,10 @@ auto lexer::get_token() -> std::vector<token> {
     auto now_states = start_state;
     // Get one line
     while (auto ch = loader_.read_char()) {
-      now_states = pre_tokenization::transition_status<char>(now_states, (*ch));
-      if (now_states == states::S1) {
+      now_states = transition_status<char>(now_states, (*ch));
+      if (now_states == states::REFUSE) {
+        throw std::runtime_error("Refusal to accept characters, incorrect use of escape characters");
+      } else if (now_states == states::S1) {
         single_line.push_back(*ch);
       }
       if (now_states == accept_state) {
@@ -192,6 +227,51 @@ auto lexer::get_token() -> std::vector<token> {
   // Single-line Tokenization
   {
     using namespace tokenization;
+    auto now_states = start_state;
+    token temp{token::t::VALUE, {}};
+    for (const auto& ch : single_line) {
+      now_states = transition_status<char>(now_states, ch);
+      if (now_states == states::REFUSE) {
+        throw std::runtime_error("REFUSE");
+      } else if (now_states == states::S2) {
+        temp.type  = token::t::SECTION_BEGIN;
+        temp.value = ch;
+        token_list.emplace_back(temp);
+        // reset
+        temp.type = token::t::VALUE;
+        temp.value.clear();
+      } else if (now_states == states::S3) {
+        // commit value
+        temp.type = token::t::VALUE;
+        token_list.emplace_back(temp);
+        // commit ']'
+        temp.type  = token::t::SECTION_END;
+        temp.value = ch;
+        token_list.emplace_back(temp);
+        // reset
+        temp.type = token::t::VALUE;
+        temp.value.clear();
+      } else if (now_states == states::S4) {
+        temp.type = token::t::COMMENT;
+        temp.value += ch;
+      } else if (now_states == states::S5) {
+        // commit value
+        temp.type = token::t::VALUE;
+        token_list.emplace_back(temp);
+        // commit '='
+        temp.type  = token::t::TYPE_CONVERSION;
+        temp.value = ch;
+        token_list.emplace_back(temp);
+        // reset
+        temp.type = token::t::VALUE;
+        temp.value.clear();
+      } else {
+        temp.value += ch;
+      }
+    }
+    if (!temp.value.empty()) {
+      token_list.emplace_back(temp);
+    }
   }
 
   return token_list;

@@ -8,18 +8,13 @@
 namespace ini::detail {
 
 struct token {
-  enum class t : char {
-    SECTION_BEGIN   = '[',
-    SECTION_END     = ']',
-    TYPE_CONVERSION = '=',
-
-    COMMENT_1  = '#',
-    COMMENT_2  = ';',
-    LINE_BREAK = '\n',
-
-    ESCAPE = '\\',
-    VALUE  = 1,
-    NONE   = 0,
+  enum class t {
+    NONE  = 0,
+    VALUE = 1,
+    SECTION_BEGIN,
+    SECTION_END,
+    TYPE_CONVERSION,
+    COMMENT,
   };
   t type;
   std::string value;
@@ -32,7 +27,7 @@ class lexer {
   explicit lexer(const std::string& file_path);
   ~lexer() = default;
 
-  auto get_token() -> std::vector<token>;
+  auto get_token() noexcept -> std::vector<token>;
 };
 
 }  // namespace ini::detail
