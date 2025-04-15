@@ -4,19 +4,33 @@
 #include <unordered_map>
 
 namespace {
+namespace pre_tokenization {
 enum class states : int;
 enum class alphabet : int;
+}  // namespace pre_tokenization
+namespace tokenization {
+enum class states : int;
+enum class alphabet : int;
+}  // namespace tokenization
 }  // unnamed namespace
-// Provide custom hashes to <>
 template <>
-struct std::hash<std::tuple<states, alphabet>> {
-  std::size_t operator()(const std::tuple<states, alphabet>& key) const noexcept {
+struct std::hash<std::tuple<pre_tokenization::states, pre_tokenization::alphabet>> {
+  std::size_t operator()(const std::tuple<pre_tokenization::states, pre_tokenization::alphabet>& key) const noexcept {
+    using std::hash;
+    return hash<int>()(static_cast<int>(std::get<0>(key))) ^ (hash<int>()(static_cast<int>(std::get<1>(key))) << 1);
+  }
+};
+template <>
+struct std::hash<std::tuple<tokenization::states, tokenization::alphabet>> {
+  std::size_t operator()(const std::tuple<pre_tokenization::states, pre_tokenization::alphabet>& key) const noexcept {
     using std::hash;
     return hash<int>()(static_cast<int>(std::get<0>(key))) ^ (hash<int>()(static_cast<int>(std::get<1>(key))) << 1);
   }
 };
 
 namespace {
+
+namespace pre_tokenization {
 enum class states : int {
   S1,     ///< Non-escape state, normal character state
   S2,     ///< In escape state
@@ -87,6 +101,67 @@ auto transition_status(const states now, char_type input) -> states {
     return states::REFUSE;
   }
 }
+}  // namespace pre_tokenization
+
+namespace tokenization {
+enum class states : int {
+  S1,  ///<
+  S2,
+  S3,
+  S4,
+  S5,
+  S6,
+  REFUSE,
+};
+
+enum class alphabet : int {
+  Q1,  ///< '['
+  Q2,  ///< ']'
+  Q3,  ///< ';'
+  Q4,  ///< '#'
+  Q5,  ///< '='
+  Q6,  ///< means other character
+};
+
+constexpr auto start_state = states::S1;  ///< init state
+
+constexpr auto accept_state = states::S6;  ///< accept state
+
+std::unordered_map<char, alphabet> cher_table = {
+    {'[', alphabet::Q1},  //
+    {']', alphabet::Q2},  //
+    {';', alphabet::Q3},  //
+    {'#', alphabet::Q4},  //
+    {'=', alphabet::Q5},  //
+};
+// convert Character to State
+template <typename char_type>
+auto get_alphabet(char_type input) -> alphabet {
+  if (cher_table.find(input) != cher_table.end()) {
+    return cher_table[input];
+  } else {
+    return alphabet::Q6;
+  }
+}
+
+/********** Transition Function ***************************************************************************************/
+std::unordered_map<std::tuple<states, alphabet>, states> transfer_function = {
+    // S1
+    {{states::S1, /* + */ alphabet::Q1}, /* -> */ states::S3},
+};
+
+template <typename char_type>
+auto transition_status(const states now, char_type input) -> states {
+  auto input_S = static_cast<states>(now);
+  auto input_Q = static_cast<alphabet>(get_alphabet(input));
+  auto key     = std::make_tuple(input_S, input_Q);
+  if (transfer_function.find(key) != transfer_function.end())
+    return transfer_function[key];
+  else {
+    return states::REFUSE;
+  }
+}
+}  // namespace tokenization
 
 }  // unnamed namespace
 
@@ -97,26 +172,27 @@ lexer::lexer(const std::string& file_path) : loader_(file_path) {
 
 auto lexer::get_token() -> std::vector<token> {
   std::vector<token> token_list;
-  std::string line;
-  states now_states = start_state;
-  while (auto ch = loader_.read_char()) {
-    now_states = transition_status<char>(now_states, (*ch));
-    if (now_states == states::S1) {
-      line.push_back(*ch);
-    }
-    if (now_states == accept_state) {
-      break;
+  std::string single_line;
+  // Pre-tokenization
+  {
+    using namespace pre_tokenization;
+    auto now_states = start_state;
+    // Get one line
+    while (auto ch = loader_.read_char()) {
+      now_states = pre_tokenization::transition_status<char>(now_states, (*ch));
+      if (now_states == states::S1) {
+        single_line.push_back(*ch);
+      }
+      if (now_states == accept_state) {
+        break;
+      }
     }
   }
-  //
-  for (const auto& c : line) {
-    if (c == static_cast<char>(token::t::COMMENT_1)) {
-    }
+
+  // Single-line Tokenization
+  {
+    using namespace tokenization;
   }
-  token tmp;
-  tmp.type  = token::t::NONE;
-  tmp.value = line;
-  token_list.emplace_back(tmp);
 
   return token_list;
 }
