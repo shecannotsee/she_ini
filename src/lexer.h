@@ -8,7 +8,7 @@
 namespace ini::detail {
 
 struct token {
-  enum class type {
+  enum class t : char {
     SECTION_BEGIN   = '[',
     SECTION_END     = ']',
     TYPE_CONVERSION = '=',
@@ -21,7 +21,7 @@ struct token {
     VALUE  = 1,
     NONE   = 0,
   };
-  type type;
+  t type;
   std::string value;
 };
 

@@ -21,6 +21,8 @@ enum class states : int {
   S1,     ///< Non-escape state, normal character state
   S2,     ///< In escape state
   S3,     ///< Accept one line
+  S4,     ///< space
+  S5,     ///< new line
   REFUSE  ///< refuse
 };
 
@@ -31,11 +33,9 @@ enum class alphabet : int {
   Q4   ///< means other character
 };
 
-/********** init state ************************************************************************************************/
-constexpr auto start_state = states::S1;
+constexpr auto start_state = states::S1;  ///< init state
 
-/********** accept state **********************************************************************************************/
-constexpr auto accept_state = states::S3;
+constexpr auto accept_state = states::S3;  ///< accept state
 
 std::unordered_map<char, alphabet> cher_table = {
     {'\n', alphabet::Q1},  //
@@ -54,14 +54,26 @@ auto get_alphabet(char_type input) -> alphabet {
 
 /********** Transition Function ***************************************************************************************/
 std::unordered_map<std::tuple<states, alphabet>, states> transfer_function = {
+    // S1
     {{states::S1, /* + */ alphabet::Q1}, /* -> */ states::S3},
     {{states::S1, /* + */ alphabet::Q2}, /* -> */ states::S2},
-    {{states::S1, /* + */ alphabet::Q3}, /* -> */ states::S1},
+    {{states::S1, /* + */ alphabet::Q3}, /* -> */ states::S4},
     {{states::S1, /* + */ alphabet::Q4}, /* -> */ states::S1},
-    {{states::S2, /* + */ alphabet::Q1}, /* -> */ states::S1},
+    // S2
+    {{states::S2, /* + */ alphabet::Q1}, /* -> */ states::S5},
     {{states::S2, /* + */ alphabet::Q2}, /* -> */ states::S1},
     {{states::S2, /* + */ alphabet::Q3}, /* -> */ states::S2},
     {{states::S2, /* + */ alphabet::Q4}, /* -> */ states::S1},
+    // S4
+    {{states::S4, /* + */ alphabet::Q1}, /* -> */ states::S3},
+    {{states::S4, /* + */ alphabet::Q2}, /* -> */ states::S2},
+    {{states::S4, /* + */ alphabet::Q3}, /* -> */ states::S4},
+    {{states::S4, /* + */ alphabet::Q4}, /* -> */ states::S1},
+    // S5
+    {{states::S5, /* + */ alphabet::Q1}, /* -> */ states::S3},
+    {{states::S5, /* + */ alphabet::Q2}, /* -> */ states::S2},
+    {{states::S5, /* + */ alphabet::Q3}, /* -> */ states::S5},
+    {{states::S5, /* + */ alphabet::Q4}, /* -> */ states::S1},
 };
 
 template <typename char_type>
@@ -89,12 +101,22 @@ auto lexer::get_token() -> std::vector<token> {
   states now_states = start_state;
   while (auto ch = loader_.read_char()) {
     now_states = transition_status<char>(now_states, (*ch));
-    line.push_back(*ch);
+    if (now_states == states::S1) {
+      line.push_back(*ch);
+    }
     if (now_states == accept_state) {
       break;
     }
   }
   //
+  for (const auto& c : line) {
+    if (c == static_cast<char>(token::t::COMMENT_1)) {
+    }
+  }
+  token tmp;
+  tmp.type  = token::t::NONE;
+  tmp.value = line;
+  token_list.emplace_back(tmp);
 
   return token_list;
 }
